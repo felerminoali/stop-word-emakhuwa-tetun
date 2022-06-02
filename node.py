@@ -1,6 +1,9 @@
 import os
 import re
-# import pandas as pd
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+
 
 def load_data_as_dict(path):
     lines = []
@@ -71,9 +74,16 @@ if __name__ == '__main__':
 
 
 
-    # tf = term_frequency(path)
-    # print(len(tf))
-    # print(tf)
+    docs = [load_data("files/tetun.txt")]
+
+    cv = CountVectorizer()
+    term_cv = cv.fit_transform(docs)
+    term = np.array(cv.get_feature_names())
+    term_freq = term_cv.toarray().sum(axis=0)
+    tf = dict(zip(term, term_freq))
+    print(tf['a'])
+    #dict_tf = dict(sorted(tf.items(), key=lambda x: x[1], reverse=True))
+    #df_tf = pd.DataFrame.from_dict(dict_tf, orient='index', columns=["tf"])[:10]
 
     df = document_frequency(path)
     print(len(df))
@@ -82,19 +92,11 @@ if __name__ == '__main__':
     vocabulary = build_vocabulary(path)
 
     file = open('files/nodes.csv', "w")
-    delimiter = ","
+    delimiter = ";"
     newline = '\n'
-    file.writelines("id" + delimiter + "tf" + delimiter + "df" + delimiter + "tdf" + delimiter+newline)
+    file.writelines("id" + delimiter + "tf" + delimiter + "df" + delimiter + "tdf" + newline)
 
-    for term in vocabulary:
-        file.writelines(term + delimiter + "tf" + delimiter + str(df[term]) + delimiter + "tdf" + newline)
-        print("{term} {df}".format(term=term, df=df[term]))
-
-
-
-
-
-
-
-
-
+    #for term in vocabulary:
+        #file.writelines(term + delimiter + str(tf[term]) + delimiter + str(df[term]) + delimiter + str(tf[term]*df[term]) + newline)
+        #print("{term} {df} {tf}".format(term=term, df=df[term], tf=tf[term]))
+        #file.writelines(term + delimiter + "a" + delimiter + "x" + delimiter + "y" + newline)
