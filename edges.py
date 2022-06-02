@@ -24,4 +24,4 @@ def generate_edges(file, data_source, n=2, delimiter=" ", newline="\n", weight=1
     file.close()
 
 # generate the file for edges
-generate_edges("edges.txt", "tetun.txt")
+generate_edges("files/edges.txt", "files/tetun.txt")
