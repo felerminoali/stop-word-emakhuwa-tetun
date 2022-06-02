@@ -75,14 +75,19 @@ if __name__ == '__main__':
     # print(len(tf))
     # print(tf)
 
-
     df = document_frequency(path)
     print(len(df))
     print(df)
 
     vocabulary = build_vocabulary(path)
 
+    file = open('files/nodes.csv', "w")
+    delimiter = ","
+    newline = '\n'
+    file.writelines("id" + delimiter + "tf" + delimiter + "df" + delimiter + "tdf" + delimiter+newline)
+
     for term in vocabulary:
+        file.writelines(term + delimiter + "tf" + delimiter + str(df[term]) + delimiter + "tdf" + newline)
         print("{term} {df}".format(term=term, df=df[term]))
 
 
