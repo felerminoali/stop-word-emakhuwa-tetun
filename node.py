@@ -1,9 +1,6 @@
 import os
 import re
-# import numpy as np
-# import pandas as pd
-# from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-
+import csv
 
 def load_data_as_dict(path):
     lines = []
@@ -61,23 +58,29 @@ def term_frequency(path):
     tf[top] = count + 1
     return tf
 
-#number of text occur
 def document_frequency(path):
     file = load_data_as_dict(path)
-    vocabulary = build_vocabulary(path)
+
+    list_tokens = []
+    for line in file:
+        tokens = re.findall(r"[íéêóáú]*[ÁÉÊÍÓÚ]*[A-Za-z]+[-’'íéêáóúñ]*[ÁÉÍêÓÚ]*[A-Za-z]*[-’'íéêáóú]*[A-Za-z]*", line.lower())
+        uniques = list(set(tokens))
+        list_tokens.extend(uniques)
+
 
     df = {}
-    for term in vocabulary:
-        sum = 0
-        for line in file:
-            tokens = re.findall(r"[íéêóáú]*[ÁÉÊÍÓÚ]*[A-Za-z]+[-’'íéêáóúñ]*[ÁÉÍêÓÚ]*[A-Za-z]*[-’'íéêáóú]*[A-Za-z]*",line.lower())
-            if term in tokens:
-                sum += 1
-
-
-        df[term] = sum
+    top = list_tokens.pop()
+    count = 0
+    while len(list_tokens) > 0:
+        current = list_tokens.pop()
+        if current == top:
+            count += 1
+        else:
+            df[top] = count + 1
+            count = 0
+            top = current
+    df[top] = count + 1
     return df
-
 
 if __name__ == '__main__':
     path = 'files/tetun.txt'
@@ -90,13 +93,41 @@ if __name__ == '__main__':
     print(len(df))
     print(df)
 
+    df = document_frequency(path)
+    print(len(df))
+    print(df)
+
+    print(df.keys())
+
     vocabulary = build_vocabulary(path)
 
-    file = open('files/nodes.csv', "w", encoding="utf8")
-    delimiter = ";"
-    newline = '\n'
-    file.writelines("id" + delimiter + "tf" + delimiter + "df" + delimiter + "tdf" + newline)
+    print(len(vocabulary))
 
-    for term in vocabulary:
-        file.writelines(term + delimiter + str(tf[term]) + delimiter + str(df[term]) + delimiter + str(tf[term]*df[term]) + newline)
+    file = open('files/nodes.csv', "w", encoding="utf8")
+    delimiter = ","
+    newline = '\n'
+    file.writelines("id" + delimiter + "Label"+ delimiter + "tf" + delimiter + "df" + delimiter + "tdf" + newline)
+
+    ids = {}
+    for index, term in enumerate(df.keys()):
+        ids[term] = index
+        file.writelines(str(index) + delimiter + term + delimiter + str(tf[term]) + delimiter + str(df[term]) + delimiter + str(tf[term]*df[term]) + newline)
         print("{term} {tf} {df} {tdf}".format(term=term, tf=tf[term], df=df[term], tdf=tf[term]*df[term]))
+
+    print(ids)
+
+    out = ["Source, Target, Type, Weight"]
+    with open('files/edges.csv', 'r', encoding="utf8") as csvfile:
+        reader = csv.reader(csvfile)
+        header = next(reader)
+        for row in reader:
+            # print(row)
+            # print(str(ids[row[0].strip()]) + ', '+str(ids[row[1].strip()]))
+            out.append(str(ids[row[0].strip()]) + ', '+str(ids[row[1].strip()])+', Directed, 1.0')
+
+    file2 = open("files/edges-gephi.csv", "w", encoding="utf8")
+    file2.writelines("\n".join(out))
+    file2.close()
+
+    # for id in ids.keys():
+    #     print(id+" -- id: "+str(ids[id]) )
