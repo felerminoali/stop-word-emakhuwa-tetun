@@ -61,7 +61,7 @@ def tokenize_data(lang, data):
 
 
 # function to generate edges using 2 grams as default value
-def generate_edges(file, data_source, n=2, delimiter=", ", newline="\n"):
+def generate_edges(file, data_source, lang, n=2, delimiter=", ", newline="\n"):
 
     tokens = tokenize_func(lang, data_source)
 
@@ -82,7 +82,6 @@ def generate_edges(file, data_source, n=2, delimiter=", ", newline="\n"):
 
 
 def build_vocabulary(lang, data_path):
-    # tokens = tetun_tokenizer(data)
     tokens = tokenize_func(lang, data_path)
     vocabulary = list(sorted(set(tokens)))
     return vocabulary
@@ -104,7 +103,6 @@ def term_frequency(lang, data_path):
             top = current
     tf[top] = count + 1
 
-    print(tf)
     return tf
 
 
@@ -116,21 +114,18 @@ def normalized_term_frequency(tf):
     
     ntf = {}
     for term in tf.keys():
-      # ntf[term] = round(math.log2(tf[term]/number_words)*(-1), 6)
       ntf[term] = math.log(tf[term]/number_words)*(-1)
     return ntf
 
 def idf(n, df):
   idf = {}
   for term in df.keys():
-    # idf[term] = round(math.log2(n/df[term]), 6)
     idf[term] = math.log(n/df[term])
   return idf
 
 def normalized_idf(n, df):
   nidf = {}
   for term in df.keys():
-    # nidf[term] = round(math.log2((n-df[term]+0.5)/(df[term])+0.5), 6)
     nidf[term] = math.log((n-df[term]+0.5)/(df[term])+0.5)
   return nidf
 
