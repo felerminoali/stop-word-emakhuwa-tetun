@@ -8,4 +8,4 @@ if __name__ == '__main__':
     path = folder+lang+'.txt'
 
     number_of_docs = len(load_data_as_dict(path))
-    generate_edges(folder+"edges-"+lang+".csv", folder+lang+".txt")
+    generate_edges(folder+"edges-"+lang+".csv", folder+lang+".txt", lang)
