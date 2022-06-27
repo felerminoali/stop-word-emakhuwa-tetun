@@ -35,15 +35,15 @@ if __name__ == '__main__':
     error = []
     edges = []
     with open(folder+lang+'/edges-'+lang+'.csv', 'r', encoding="utf8") as csvfile:
-    reader = csv.reader(csvfile)
-    header = next(reader)
-    for row in reader:
-        if (row[0].strip() in ids) and (row[1].strip() in ids):
-          out.append(str(ids[row[0].strip()]) + ', '+str(ids[row[1].strip()])+', Directed, 1.0')
-          edges.append([str(ids[row[0].strip()]), str(ids[row[1].strip()]), 1])
-        else:
-          error.append(row[0].strip()+', '+row[1].strip())
-          # print(str( (row[0].strip() in ids))+' '+ row[0].strip()+' '+row[1].strip()+' '+str((row[1].strip() in ids)))
+      reader = csv.reader(csvfile)
+      header = next(reader)
+      for row in reader:
+          if (row[0].strip() in ids) and (row[1].strip() in ids):
+            out.append(str(ids[row[0].strip()]) + ', '+str(ids[row[1].strip()])+', Directed, 1.0')
+            edges.append([str(ids[row[0].strip()]), str(ids[row[1].strip()]), 1])
+          else:
+            error.append(row[0].strip()+', '+row[1].strip())
+            # print(str( (row[0].strip() in ids))+' '+ row[0].strip()+' '+row[1].strip()+' '+str((row[1].strip() in ids)))
 
 
     file2 = open(folder+lang+"/edges-"+lang+"-gephi.csv", "w", encoding="utf8")

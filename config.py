@@ -4,6 +4,9 @@ import re
 from nltk import tokenize
 from english_words import english_words_lower_set
 
+
+import math
+
 def load_data_as_dict(path):
     lines = []
     with open(path, "r", encoding="utf8") as file:
@@ -24,6 +27,7 @@ def tetun_tokenizer(data):
 
 def whitespace_tokenizer(data, lang='portuguese'):
     lower_data = data.lower()  # lowercase the corpus
+    tokens =[]
     tokens = [token for token in tokenize.word_tokenize(lower_data, language=lang) if token.isalpha()]
     return tokens
 
@@ -39,11 +43,12 @@ def count_freq(term, tokens):
 
 def tokenize_func(lang, data_source):
     tokens = []
-    data = load_data(data_source)
-    if lang == 'tetun':
-        tokens = tetun_tokenizer(data)
-    else:
-        tokens = whitespace_tokenizer(data, lang)
+    lines = load_data_as_dict(data_source)
+
+    for i, line in enumerate(lines):
+        tokenized = tokenize_data(lang, line)
+        tokens.extend(tokenized)
+
     return tokens
 
 def tokenize_data(lang, data):
@@ -98,20 +103,36 @@ def term_frequency(lang, data_path):
             count = 0
             top = current
     tf[top] = count + 1
+
+    print(tf)
     return tf
 
 
-def nomalized_term_frequency(lang, data_path):
-    number_words = 0 
-    tf = term_frequency(lang, data_path)
-    
-    for term in tf.items():
+def nomalized_term_frequency(tf):
+    number_words = 0
+
+    for term in tf.keys():
       number_words += tf[term]
     
     ntf = {}
-    for term in tf.items():
-      ntf[term] = round(tf[term]/number_words, 6)
+    for term in tf.keys():
+      # ntf[term] = round(math.log2(tf[term]/number_words)*(-1), 6)
+      ntf[term] = math.log(tf[term]/number_words)*(-1)
     return ntf
+
+def idf(n, df):
+  idf = {}
+  for term in df.keys():
+    # idf[term] = round(math.log2(n/df[term]), 6)
+    idf[term] = math.log(n/df[term])
+  return idf
+
+def normalized_idf(n, df):
+  nidf = {}
+  for term in df.keys():
+    # nidf[term] = round(math.log2((n-df[term]+0.5)/(df[term])+0.5), 6)
+    nidf[term] = math.log((n-df[term]+0.5)/(df[term])+0.5)
+  return nidf
 
 
 def document_frequency(lang, path):
@@ -140,6 +161,16 @@ def document_frequency(lang, path):
     df[top] = count + 1
     return df
 
+def remove_noise(weightModel, lang):
+  clean_tf = {}
+  dic = words_dict(lang)
+  if dic:
+    for term in weightModel.keys():
+      if term+'\n' in dic or term in dic:
+        clean_tf[term] = weightModel[term]
+  return clean_tf
+
+
 def words_dict(lang):
   words_dic = {}
   if lang == 'portuguese':
@@ -151,12 +182,4 @@ def words_dict(lang):
 
   return words_dic
 
-def remove_noise(weightModel, lang):
-  clean_tf = {}
-  dic = words_dict(lang)
-  if dic:
-    for term in weightModel.keys():
-      if term+'\n' in dic or term in dic:
-        clean_tf[term] = weightModel[term]
-  return clean_tf
 
