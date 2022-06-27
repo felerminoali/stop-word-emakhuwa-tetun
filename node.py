@@ -21,7 +21,7 @@ if __name__ == '__main__':
     df = document_frequency(lang, path)
     df = remove_noise(df, lang)
 
-    idf = idf(number_of_docs, df)
+    idf_ = idf(number_of_docs, df)
     nidf = normalized_idf(number_of_docs, df)
 
     delimiter = ","
@@ -48,8 +48,8 @@ if __name__ == '__main__':
             str(tf[term]) + delimiter + 
             str(df[term]) + delimiter + 
             str(tf[term]*df[term]) + delimiter  + 
-            str(ntf[term]*idf[term]) + delimiter  + 
-            str(idf[term]) + delimiter + 
+            str(ntf[term]*idf_[term]) + delimiter  + 
+            str(idf_[term]) + delimiter + 
             str(nidf[term]) + delimiter + 
             str(ntf[term]) + delimiter + 
             is_stop+ newline)
