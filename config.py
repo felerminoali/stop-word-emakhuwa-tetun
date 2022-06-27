@@ -108,7 +108,7 @@ def term_frequency(lang, data_path):
     return tf
 
 
-def nomalized_term_frequency(tf):
+def normalized_term_frequency(tf):
     number_words = 0
 
     for term in tf.keys():
@@ -181,5 +181,3 @@ def words_dict(lang):
     words_dic = english_words_lower_set
 
   return words_dic
-
-
