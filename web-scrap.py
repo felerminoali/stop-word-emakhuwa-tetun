@@ -4,10 +4,13 @@ import requests
 import re
 
 #TATOLI
-tatoli_news = 'files/arsi_dataset_tetun_tatoli.txt'
+tatoli_news = 'files/04_dataset_tetun_tatoli.txt'
 
-categories = ['politika', 'edukasaun', 'saude', 'eleisaun', 'ekonomia'] # scrap more categories when needed
-page_num = range(1, 11) # limit to 10 pages
+categories = ['politika', 'edukasaun', 'saude', 'eleisaun', 'ekonomia'] # scrap more categories when needed 
+# more categories:['defeza', 'seguransa', 'justisa', 'lei', 'kapital', 'inkluzaun-sosial', 'internasional', 'desportu'] 
+# #less than 20 news articles: ['sosiedade-sivil', 'mensajen-estadu']
+
+page_num = range(61, 101) # limit to 10 pages
 pages_links = []
 for category in categories:
     for p_num in page_num:
