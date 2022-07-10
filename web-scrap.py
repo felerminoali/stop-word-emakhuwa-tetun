@@ -1,16 +1,24 @@
+'''
+This document contains scaping codes for Tatoli that can also be used to scrap other online news portal that have similar structure.
+It scarps the news articles text contents based on pre-defined list of categories for 2022.
+We first defined the maximum pages for the set categories and then collect and save all the links in those categories in a list.
+After that, the duplicate links are removed and then extract the content for for each link and save in a text file.
+'''
+
+
 import html
 from bs4 import BeautifulSoup as tl
 import requests
 import re
 
-#TATOLI
-tatoli_news = 'files/04_dataset_tetun_tatoli.txt'
 
-categories = ['politika', 'edukasaun', 'saude', 'eleisaun', 'ekonomia'] # scrap more categories when needed 
-# more categories:['defeza', 'seguransa', 'justisa', 'lei', 'kapital', 'inkluzaun-sosial', 'internasional', 'desportu'] 
+#TATOLI - www.tatoli.tl
+tatoli_news = 'files/dataset_tetun_tatoli.txt'
+
+categories = ['politika', 'edukasaun', 'saude', 'eleisaun', 'ekonomia', 'defeza', 'seguransa', 'justisa', 'lei', 'kapital', 'inkluzaun-sosial', 'internasional', 'desportu']
 # #less than 20 news articles: ['sosiedade-sivil', 'mensajen-estadu']
 
-page_num = range(61, 101) # limit to 10 pages
+page_num = range(1, 101) # limit to 10 pages
 pages_links = []
 for category in categories:
     for p_num in page_num:

@@ -39,6 +39,7 @@ if __name__ == '__main__':
             "ntf" + delimiter+ 
             "stopword" + newline
             ]
+
     for index, term in enumerate(tf.keys()):
         ids[term] = index
         is_stop = '1' if term in stopw else '0'
@@ -72,7 +73,3 @@ if __name__ == '__main__':
     file2 = open(folder+lang+"/edges-"+lang+"-gephi.csv", "w", encoding="utf8")
     file2.writelines("\n".join(out))
     file2.close()
-
-
-
-

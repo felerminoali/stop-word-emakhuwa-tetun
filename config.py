@@ -7,30 +7,41 @@ from english_words import english_words_lower_set
 
 import math
 
+# function to load data as dictionary
 def load_data_as_dict(path):
     lines = []
     with open(path, "r", encoding="utf8") as file:
         lines = file.readlines()
+    
     return lines
+
 
 # function to load data
 def load_data(file_path):
   with open(file_path, 'r', encoding="utf8") as f:
     data = f.read()
+  
   return data
+
 
 # lowercasing and tokenize
 def tetun_tokenizer(data):
     lower_data = data.lower() #lowercase the corpus
-    tokens = re.findall(r"[íéêóáú]*[ÁÉÊÍÓÚ]*[A-Za-z]+[-’'íéêáóúñ]*[ÁÉÍêÓÚ]*[A-Za-z]*[-’'íéêáóú]*[A-Za-z]*", lower_data)
+    tokens = re.findall(r"[áéíóú]*[a-z]+[-’'áéíóúñ]*[a-z]*[-’'áéíóú]*[a-z]*", lower_data)
+    
     return tokens
 
+
+# white space tokenizer, set portuguese as default value
 def whitespace_tokenizer(data, lang='portuguese'):
     lower_data = data.lower()  # lowercase the corpus
     tokens =[]
     tokens = [token for token in tokenize.word_tokenize(lower_data, language=lang) if token.isalpha()]
+    
     return tokens
 
+
+# 
 def count_freq(term, tokens):
     tokens = sorted(tokens)
     sum = 0
@@ -39,8 +50,11 @@ def count_freq(term, tokens):
             sum+=1
             if tokens[index + 1] != t:
                 break
+    
     return sum
 
+
+# 
 def tokenize_func(lang, data_source):
     tokens = []
     lines = load_data_as_dict(data_source)
@@ -51,12 +65,15 @@ def tokenize_func(lang, data_source):
 
     return tokens
 
+
+# function to tokenize the corpus
 def tokenize_data(lang, data):
     tokens = []
     if lang == 'tetun':
         tokens = tetun_tokenizer(data)
     else:
         tokens = whitespace_tokenizer(data)
+    
     return tokens
 
 
@@ -64,18 +81,17 @@ def tokenize_data(lang, data):
 def generate_edges(file, data_source, lang, n=2, delimiter=", ", newline="\n"):
 
     tokens = tokenize_func(lang, data_source)
-
     two_grams = list(ngrams(tokens, 2))
 
     file = open(file, "w", encoding="utf8")
     for two_gram in two_grams:
         gram_1, gram_2 = two_gram
         
-        # if gram_1[-1] == "-":
-        #     gram_1 = gram_1[:-1] #remove "-" if it is the last char of word
+        if gram_1[-1] == "-":
+          gram_1 = gram_1[:-1] #remove "-" if it is the last char of word
 
-        # if gram_2[-1] == "-":
-        #     gram_2 = gram_2[:-1] #remove "-" if it is the last char of word
+        if gram_2[-1] == "-":
+          gram_2 = gram_2[:-1] #remove "-" if it is the last char of word
 
         file.writelines(gram_1 + delimiter + gram_2 + newline)
     file.close()
@@ -84,9 +100,11 @@ def generate_edges(file, data_source, lang, n=2, delimiter=", ", newline="\n"):
 def build_vocabulary(lang, data_path):
     tokens = tokenize_func(lang, data_path)
     vocabulary = list(sorted(set(tokens)))
+    
     return vocabulary
 
-# number of ocurrency
+
+# function to calculate term frequency (TF)
 def term_frequency(lang, data_path):
     tokens = sorted(tokenize_func(lang, data_path))
 
@@ -106,6 +124,7 @@ def term_frequency(lang, data_path):
     return tf
 
 
+# function to calculate normalized term frequency (NTF)
 def normalized_term_frequency(tf):
     number_words = 0
 
@@ -115,21 +134,29 @@ def normalized_term_frequency(tf):
     ntf = {}
     for term in tf.keys():
       ntf[term] = math.log(tf[term]/number_words)*(-1)
+
     return ntf
 
+
+# function to calculate inverse document frequency (IDF)
 def idf(n, df):
   idf = {}
   for term in df.keys():
     idf[term] = math.log(n/df[term])
+
   return idf
 
+
+# function to calculate normalized inverse document frequency (NIDF)
 def normalized_idf(n, df):
   nidf = {}
   for term in df.keys():
     nidf[term] = math.log((n-df[term]+0.5)/(df[term])+0.5)
+
   return nidf
 
 
+# function to calculate document frequency (DF)
 def document_frequency(lang, path):
     file = load_data_as_dict(path)
 
@@ -154,8 +181,11 @@ def document_frequency(lang, path):
             count = 0
             top = current
     df[top] = count + 1
+    
     return df
 
+
+# function to pre-process English and Portuguese
 def remove_noise(weightModel, lang):
   clean_tf = {}
   dic = words_dict(lang)
@@ -163,9 +193,11 @@ def remove_noise(weightModel, lang):
     for term in weightModel.keys():
       if term+'\n' in dic or term in dic:
         clean_tf[term] = weightModel[term]
+  
   return clean_tf
 
 
+#
 def words_dict(lang):
   words_dic = {}
   if lang == 'portuguese':
