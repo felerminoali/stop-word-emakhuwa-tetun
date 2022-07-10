@@ -41,7 +41,7 @@ def whitespace_tokenizer(data, lang='portuguese'):
     return tokens
 
 
-# 
+# Counts the frequency of a term
 def count_freq(term, tokens):
     tokens = sorted(tokens)
     sum = 0
@@ -54,7 +54,7 @@ def count_freq(term, tokens):
     return sum
 
 
-# 
+# Tokenizer
 def tokenize_func(lang, data_source):
     tokens = []
     lines = load_data_as_dict(data_source)
@@ -97,6 +97,7 @@ def generate_edges(file, data_source, lang, n=2, delimiter=", ", newline="\n"):
     file.close()
 
 
+# Builds a vocabulary of unique words
 def build_vocabulary(lang, data_path):
     tokens = tokenize_func(lang, data_path)
     vocabulary = list(sorted(set(tokens)))
@@ -197,7 +198,7 @@ def remove_noise(weightModel, lang):
   return clean_tf
 
 
-#
+# Return the wordlist or vocabulary of a given language
 def words_dict(lang):
   words_dic = {}
   if lang == 'portuguese':
