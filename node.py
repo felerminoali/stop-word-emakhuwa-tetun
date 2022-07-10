@@ -2,10 +2,7 @@ from config import load_data_as_dict, term_frequency, document_frequency, remove
 from nltk.corpus import stopwords
 import csv
 
-if __name__ == '__main__':
-    
-    lang = 'portuguese'
-    folder = 'wikiclir/'
+def run(lang, folder):
     path = folder+lang+'.txt'
 
     number_of_docs = len(load_data_as_dict(path))
@@ -73,3 +70,10 @@ if __name__ == '__main__':
     file2 = open(folder+lang+"/edges-"+lang+"-gephi.csv", "w", encoding="utf8")
     file2.writelines("\n".join(out))
     file2.close()
+
+if __name__ == '__main__':
+  
+  run('english', 'wikiclir/')
+  run('portuguese', 'wikiclir/')
+  run('emakhuwa', 'tetun-emakhuwa/')
+  run('tetun', 'tetun-emakhuwa/')
